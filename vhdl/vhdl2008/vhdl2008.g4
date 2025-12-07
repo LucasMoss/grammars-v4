@@ -20,6 +20,11 @@
 // This grammar is based on the VHDL grammar by Denis Gavrish in the
 // ANTLR Grammars v4 repository : <https://github.com/antlr/grammars-v4>
 //
+// In addition to the minimal test files in the `examples` folder, this
+// grammar has been tested on all VHDL in:
+//     surf       <https://github.com/slaclab/surf>
+//     open-logic <https://github.com/open-logic/open-logic>
+//
 // This grammar has been updated to support parts of the VHDL-2008 specification.
 // It does not support PSL or VUnit features.
 //
@@ -39,7 +44,6 @@ grammar vhdl2008;
 options {
     caseInsensitive = true;
 }
-
 
 ABS
     : 'ABS'
@@ -961,6 +965,7 @@ entity_class
     | TYPE
     | SUBTYPE
     | CONSTANT
+    | SIGNAL
     | VARIABLE
     | COMPONENT
     | LABEL
@@ -1261,7 +1266,7 @@ indexed_name
 
 instantiated_unit
     : (COMPONENT)? name
-    | ENTITY name ( LPAREN identifier RPAREN)?
+    | ENTITY name (LPAREN identifier RPAREN)?
     | CONFIGURATION name
     ;
 
@@ -1446,10 +1451,11 @@ multiplying_operator
     ;
 
 name
-    : (identifier        // simple_name
-    | STRING_LITERAL     // operator_symbol
-    | CHARACTER_LITERAL) 
-    (name_part)*
+    : (
+        identifier       // simple_name
+        | STRING_LITERAL // operator_symbol
+        | CHARACTER_LITERAL
+    ) (name_part)*
     ;
 
 name_part
@@ -1901,7 +1907,11 @@ shift_operator
 //     ;
 
 signal_assignment_statement
-    : (label_colon)? (simple_signal_assignment | conditional_signal_assignment | selected_signal_assignment)
+    : (label_colon)? (
+        simple_signal_assignment
+        | conditional_signal_assignment
+        | selected_signal_assignment
+    )
     ;
 
 signal_declaration
@@ -2034,7 +2044,6 @@ subtype_indication
     : (resolution_indication)? name (constraint)?
     ;
 
-
 suffix
     : identifier
     | CHARACTER_LITERAL
@@ -2091,7 +2100,11 @@ use_clause
     ;
 
 variable_assignment_statement
-    : (label_colon)? (simple_variable_assignment | conditional_variable_assignment | selected_variable_assignment)
+    : (label_colon)? (
+        simple_variable_assignment
+        | conditional_variable_assignment
+        | selected_variable_assignment
+    )
     ;
 
 variable_declaration
@@ -2319,7 +2332,6 @@ WALRUS
 BOX
     : '<>'
     ;
-
 
 DBLQUOTE
     : '"'
